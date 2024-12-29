@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add An Employee</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="card-title mb-0">Add An Employee to Team</h1>
+            <p class="mt-1" th:text="${team.name}"></p>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/employee/save/{id}(id=${team.team_id})}" th:object="${employee}" method="post" class="row g-3">
+                <input type="hidden" th:field="*{employee_id}">
+
+                <!-- Name Field -->
+                <div class="col-md-6">
+                    <label for="name" class="form-label">First Name</label>
+                    <input type="text" id="name" name="name" th:field="*{name}" class="form-control" placeholder="Enter first name" required>
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="col-md-6">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" th:field="*{last_name}" class="form-control" placeholder="Enter last name" required>
+                </div>
+
+                <!-- Task Description Field -->
+                <div class="col-md-12">
+                    <label for="task.description" class="form-label">Task Description</label>
+                    <input type="text" id="task.description" name="task.description" th:field="*{task.description}" class="form-control" placeholder="Describe the task" required>
+                </div>
+
+                <!-- Team Selection -->
+                <div class="col-md-12">
+                    <label for="team" class="form-label">Team</label>
+                    <select id="team" name="team" class="form-select" required>
+                        <option th:value="${team.team_id}" th:text="${team.name}"></option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-md-12 text-center">
+                    <button type="submit" class="btn btn-primary">Add Employee</button>
+                </div>
+            </form>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <form th:action="@{/team/view/{id}(id=${team.team_id})}" method="get">
+                    <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit" class="btn btn-secondary">
+                        Go Back
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

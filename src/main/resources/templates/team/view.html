@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #444;
+    }
+    a {
+      text-decoration: none;
+      color: #007bff;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    button i {
+      font-style: normal;
+    }
+    .delete{
+      background-color:  brown;
+      color:black;
+    }
+    .update{
+      background-color: cornflowerblue;
+      color: black;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      background: #fff;
+    }
+    table th, table td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+    table th {
+      background-color: #f8f9fa;
+      color: #555;
+      font-weight: bold;
+    }
+    table tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    table tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .container > div {
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+<h1>Team : <span th:text="${team.name}"></span></h1>
+<a href="/team/all">Home</a>
+
+<div class="container">
+  <!-- Employees Section -->
+  <div>
+    <h2>Employees</h2>
+    <form action="/employee/add" method="get" th:action="@{/employee/add/{id}(id=${team.team_id})}">
+      <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+        <i>Add Employee</i>
+      </button>
+    </form>
+    <table>
+      <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Task</th>
+        <th>Delete</th>
+        <th>Update</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="employee : ${employees}">
+        <td th:text="${employee.employee_id}"></td>
+        <td th:text="${employee.name}"></td>
+        <td th:text="${employee.last_name}"></td>
+        <td th:text="${employee.task.description}"></td>
+        <td>
+          <form th:action="@{/employee/delete/{id}/{eid}(id=${team.team_id},eid=${employee.employee_id})}" method="get">
+            <button class="delete" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+              <i>Delete</i>
+            </button>
+          </form>
+        </td>
+        <td>
+          <form th:action="@{/employee/update/{id}/{eid}(id=${team.team_id}, eid=${employee.employee_id})}" method="get">
+            <button class="update" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+              <i>Update</i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Managers Section -->
+  <div>
+    <h2>Managers</h2>
+    <form th:action="@{/manager/add/{id}(id=${team.team_id})}" method="get">
+      <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+        <i>Add Manager</i>
+      </button>
+    </form>
+    <table>
+      <thead>
+      <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Delete</th>
+        <th>Update</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="manager : ${managers}">
+        <td th:text="${manager.manager_id}"></td>
+        <td th:text="${manager.name}"></td>
+        <td th:text="${manager.last_name}"></td>
+        <td>
+          <form th:action="@{/manager/delete/{id}/{eid}(id=${team.team_id},eid=${manager.manager_id})}" method="get">
+            <button class="delete" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+              <i>Delete</i>
+            </button>
+          </form>
+        </td>
+        <td>
+          <form th:action="@{/manager/update/{id}/{eid}(id=${team.team_id},eid=${manager.manager_id})}" method="get">
+            <button class="update" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+              <i>Update</i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #444;
+            margin-bottom: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        button i {
+            font-style: normal;
+        }
+        table {
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: #fff;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        table th {
+            background-color: #f8f9fa;
+            color: #555;
+            font-weight: bold;
+        }
+        table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .delete{
+            background-color:  brown;
+            color:black;
+        }
+        .update{
+            background-color: cornflowerblue;
+            color: black;
+        }
+        .view{
+            background-color: #555555;
+            color: black;
+        }
+        .logout{
+            background-color: indianred;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<h1>Teams</h1>
+<form method="post" th:action="@{/logout}">
+    <button class="logout" type="submit">Logout</button>
+</form>
+<form action="/team/add" method="get">
+    <button th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+        <i>Add Team</i>
+    </button>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Delete</th>
+        <th>Update</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="team : ${teams}">
+        <td th:text="${team.team_id}"></td>
+        <td th:text="${team.name}"></td>
+        <td>
+            <form th:action="@{/team/delete/{id}(id=${team.team_id})}" method="get">
+                <button class="delete" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+                    <i>Delete</i>
+                </button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/team/update/{id}(id=${team.team_id})}" method="get">
+                <button class="update" th:if="${#authorization.expression('hasRole(''ADMIN'')')}" type="submit">
+                    <i>Update</i>
+                </button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/team/view/{id}(id=${team.team_id})}" method="get">
+                <button class="view" type="submit">
+                    View Team
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
